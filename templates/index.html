@@ -2,12 +2,26 @@
 
 {% block content %}
 
-<ol>
-    {% for player in players %}
-    <li>{{player}}</li>
-    {% endfor %}
-</ol>
-
+<div class="top_list">
+    <h2>
+        Top 10 xGi
+    </h2>
+    
+    <h5>
+        (last 3 matchdays)
+    </h5>
+    
+    <ol>
+        {% for player in players %}
+        <li>
+            <div>
+                <h3><a href="{{url_for('player', player_id=player.id)}}">{{player.name}}</a></h3>
+                <h5>xGi: {{player.xgi | round(2, 'common')}}</h5>
+            </div>
+        </li>
+        {% endfor %}
+    </ol>
+</div>
 
 
 {% endblock %}
