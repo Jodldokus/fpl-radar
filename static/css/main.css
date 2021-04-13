@@ -1,23 +1,13 @@
-header {
-    display: flex;
-    justify-content: center;
-}
 
 .button {
     margin: 0 auto;
     width: 100px;
-    display: block;
-   
+    display: block;  
 }
 
 body {
     font-family: 'Roboto Mono', monospace;
     text-align: center;
-}
-
-.highlight{
-    font-size: 1.1em;
-    text-decoration: underline;
 }
 
 h1 a{
@@ -36,20 +26,17 @@ table {
     min-width: 600px;
 }
 
-tr {
-    border-bottom:2px solid black;
-}
-
 table th,td {
     text-align: left;
     padding: 10px 10px;
 }
 
-.player {
-    margin-top: 30px;
+.highlight{
+    font-size: 1.1em;
+    text-decoration: underline;
 }
 
-.player h2 {
+.centered {
     text-align:center;
 }
 
@@ -58,10 +45,6 @@ table th,td {
     margin-left: auto;
     margin-right: auto;
     width: 300px;
-}
-
-.top_list h5, h2{
-    text-align: center;
 }
 
 a{
@@ -74,4 +57,44 @@ a:hover{
 
 ol {
    background-color: rgba(186, 221, 103, 0.329);
+}
+
+
+@media
+only screen and (max-width: 760), (min-device-width: 768) and (max-device-width: 1024px) {
+    table, th, td, tr{
+        display: block;
+    }
+
+    th{
+        position: absolute;
+        top: -9999px;
+        left: -9999px;
+    }
+
+    td {
+        border: none;
+        border-bottom: 1px solid green;
+        position: relative;
+        padding-left: 50%
+    }
+
+    td::before{
+        position: absolute;
+        top: 6px;
+        left: 6px;
+        width: 45%;
+        padding-right: 10px;
+        white-space: nowrap;
+    }
+
+    td:nth-of-type(1)::before{ content: "Against" }
+    td:nth-of-type(1)::before{ content: "Goals" }
+    td:nth-of-type(1)::before{ content: "xG" }
+    td:nth-of-type(1)::before{ content: "npxG" }
+    td:nth-of-type(1)::before{ content: "Assists" }
+    td:nth-of-type(1)::before{ content: "xA" }
+    td:nth-of-type(1)::before{ content: "KP" }
+    
+
 }
