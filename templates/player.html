@@ -6,8 +6,8 @@
 
 <div class="player">
     <h2 class="centered">{{player.name}}</h2>
-    <table>
-        <tr>
+    <table class ="player_info">
+        <thead>
             <th>Against</th>
             <th>Goals</th>
             <th>xG</th>
@@ -15,26 +15,30 @@
             <th>Assists</th>
             <th>xA</th>
             <th>KP</th>
-        </tr>
-        {% for match in player.matches %}
-        <tr>
+        </thead>
+        <tbody>
+            {% for match in player.matches %}
+        
+            <tr>
             
-            <th>
-                {% if player.team == match.h_team %}
-                {{match.a_team}} (H)
-                {% else %}
-                {{match.h_team}} (A)
-                {% endif %}
-                <p>{{match.date}}</p>
-            </th>
-            <td class="highlight">{{match.goals}}</td>
-            <td>{{match.xG | round(2, 'common')}}</td>
-            <td>{{match.npxG | round(2, 'common')}}</td>
-            <td class="highlight">{{match.assists}}</td>
-            <td>{{match.xA | round(2, 'common')}}</td>
-            <td>{{match.key_passes}}</td>
-        </tr>
-        {% endfor %}
+                <td data-label="Against">
+                    {% if player.team == match.h_team %}
+                    {{match.a_team}} (H)
+                    {% else %}
+                    {{match.h_team}} (A)
+                    {% endif %}
+                    <p>{{match.date}}</p>
+                </td>
+                <td data-label="Goals" class="highlight">{{match.goals}}</td>
+                <td data-label="xG">{{match.xG | round(2, 'common')}}</td>
+                <td data-label="npxG">{{match.npxG | round(2, 'common')}}</td>
+                <td data-label="Assists" class="highlight">{{match.assists}}</td>
+                <td data-label="xA">{{match.xA | round(2, 'common')}}</td>
+                <td data-label="KP">{{match.key_passes}}</td>
+            </tr>
+        
+            {% endfor %}
+        </tbody>
     </table>
 </div>
 
