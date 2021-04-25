@@ -4,7 +4,7 @@ from flask import request, render_template, flash, redirect, url_for
 
 @app.route('/')
 def index():
-    top_players = db.session.query(Player).order_by(Player.xgi.desc()).limit(20)
+    top_players = db.session.query(Player).order_by(Player.xgi.desc()).limit(10)
     return render_template('index.html', players=top_players)
 
 @app.route('/player/<player_id>')
