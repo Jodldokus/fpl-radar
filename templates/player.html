@@ -29,12 +29,21 @@
                     {% endif %}
                     <p>{{match.date}}</p>
                 </td>
+                {% if match.xG is not none %}
                 <td data-label="Goals" class="highlight">{{match.goals}}</td>
                 <td data-label="xG">{{match.xG | round(2, 'common')}}</td>
                 <td data-label="npxG">{{match.npxG | round(2, 'common')}}</td>
                 <td data-label="Assists" class="highlight">{{match.assists}}</td>
                 <td data-label="xA">{{match.xA | round(2, 'common')}}</td>
                 <td data-label="KP">{{match.key_passes}}</td>
+                {% else %}
+                <td data-label="Goals" class="highlight">-</td>
+                <td data-label="xG">-</td>
+                <td data-label="npxG">-</td>
+                <td data-label="Assists" class="highlight">-</td>
+                <td data-label="xA">-</td>
+                <td data-label="KP">-</td>
+                {% endif %}
             </tr>
         
             {% endfor %}

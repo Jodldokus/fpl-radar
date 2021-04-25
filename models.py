@@ -13,8 +13,8 @@ class Player(db.Model):
     def calc_xgi(self):
         self.xgi = 0.0
         for match in self.matches:
-            print(self.xgi)
-            self.xgi += match.xG + match.xA
+            if match.xG:
+                self.xgi += match.xG + match.xA
         print(f"{self.name} has an xGi of {self.xgi}")
 
 class Match(db.Model):
