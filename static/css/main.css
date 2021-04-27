@@ -50,6 +50,11 @@ table th,td {
     width: 300px;
 }
 
+
+/* .top_list ol{
+    padding-top: 5px;
+} */
+
 .player_info{
     width: 100%;
     border-collapse: collapse;

@@ -17,6 +17,14 @@ class Player(db.Model):
                 self.xgi += match.xG + match.xA
         print(f"{self.name} has an xGi of {self.xgi}")
 
+class Team(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(40), index=True)
+    xGA = db.Column(db.Float, index=True)
+
+    def __repr__(self):
+        return f"{self.name}"
+
 class Match(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     xG = db.Column(db.Float, index=True)
