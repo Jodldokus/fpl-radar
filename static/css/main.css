@@ -50,6 +50,13 @@ table th,td {
     width: 300px;
 }
 
+.dashboard {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-around;
+    
+}
+
 
 /* .top_list ol{
     padding-top: 5px;

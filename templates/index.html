@@ -2,26 +2,52 @@
 
 {% block content %}
 
-<div class="top_list">
-    <h2 class="centered">
-        Top 10 xGi
-    </h2>
+<h1 class="centered">
+    Last 3 Gameweeks
+</h1>
+
+<div class = "dashboard">
+
+    <div class="top_list">
+        <h2 class="centered">
+            Top 10 Players
+            (by xGi)
+        </h2>
+        
+        <ol>
+            {% for player in players %}
+            <li>
+                <div>
+                    <h3><a href="{{url_for('player', player_id=player.id)}}">{{player.name}}</a></h3>
+                    <h5>xGi: {{player.xGi | round(2, 'common')}}</h5>
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
     
-    <h5 class="centered">
-        (last 3 matchdays)
-    </h5>
+    <div class="top_list">
+        <h2 class="centered">
+            Top 5 Defences
+            (by xGa)
+        </h2>
     
-    <ol>
-        {% for player in players %}
-        <li>
-            <div>
-                <h3><a href="{{url_for('player', player_id=player.id)}}">{{player.name}}</a></h3>
-                <h5>xGi: {{player.xgi | round(2, 'common')}}</h5>
-            </div>
-        </li>
-        {% endfor %}
-    </ol>
+        <ol>
+            {% for team in teams %}
+            <li>
+                <div>
+                    <h3>{{team.name}}</h3>
+                    <h5>{{team.xGa | round(2, 'common')}}</h5>
+                </div>
+            </li>
+            {% endfor %}
+        </ol>
+    </div>
+
 </div>
+
+
+
 
 
 {% endblock %}

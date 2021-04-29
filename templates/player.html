@@ -17,25 +17,25 @@
             <th>KP</th>
         </thead>
         <tbody>
-            {% for match in player.matches %}
+            {% for performance in player.performances %}
         
             <tr>
             
                 <td data-label="Against">
-                    {% if player.team == match.h_team %}
-                    {{match.a_team}} (H)
+                    {% if player.team == performance.match.home_team %}
+                    {{performance.match.away_team}} (H)
                     {% else %}
-                    {{match.h_team}} (A)
+                    {{performance.match.home_team}} (A)
                     {% endif %}
-                    <p>{{match.date}}</p>
+                    <p>{{performance.match.date}}</p>
                 </td>
-                {% if match.xG is not none %}
-                <td data-label="Goals" class="highlight">{{match.goals}}</td>
-                <td data-label="xG">{{match.xG | round(2, 'common')}}</td>
-                <td data-label="npxG">{{match.npxG | round(2, 'common')}}</td>
-                <td data-label="Assists" class="highlight">{{match.assists}}</td>
-                <td data-label="xA">{{match.xA | round(2, 'common')}}</td>
-                <td data-label="KP">{{match.key_passes}}</td>
+                {% if performance.xG is not none %}
+                <td data-label="Goals" class="highlight">{{performance.goals}}</td>
+                <td data-label="xG">{{performance.xG | round(2, 'common')}}</td>
+                <td data-label="npxG">{{performance.npxG | round(2, 'common')}}</td>
+                <td data-label="Assists" class="highlight">{{performance.assists}}</td>
+                <td data-label="xA">{{performance.xA | round(2, 'common')}}</td>
+                <td data-label="KP">{{performance.key_passes}}</td>
                 {% else %}
                 <td data-label="Goals">-</td>
                 <td data-label="xG">-</td>
