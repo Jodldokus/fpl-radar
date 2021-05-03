@@ -8,14 +8,15 @@
 
 <div class = "dashboard">
 
+
+    {% for list_name, list in players.items() %}
     <div class="top_list">
         <h2 class="centered">
-            Top 10 Players
-            (by xGi)
+            {{list_name}}
         </h2>
         
         <ol>
-            {% for player in players %}
+            {% for player in list %}
             <li>
                 <div>
                     <h3><a href="{{url_for('player', player_id=player.id)}}">{{player.name}}</a></h3>
@@ -25,6 +26,8 @@
             {% endfor %}
         </ol>
     </div>
+    {% endfor %}
+
     
     <div class="top_list">
         <h2 class="centered">
