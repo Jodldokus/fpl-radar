@@ -8,16 +8,19 @@ from understat import Understat
 from models import Player, Match, Team, Performance
 from sqlalchemy import or_
 from datetime import date
+from fpl import FPL
 
 async def main():
     async with aiohttp.ClientSession() as session:
         understat = Understat(session)
-        if db.session.query(Player).first() == None:
+        fpl = FPL(session)
+
+        if not db.session.query(Player).first():
             # 1. initialise teams
-            if not db.session.query(Team).first():
-                await init_teams(understat)
+            
+            await init_teams(understat)
             # 2. initialise players
-            await init_players(understat)
+            await init_players(understat, fpl)
 
         # 1. initialise current matches
         await init_matches(understat)
@@ -33,7 +36,7 @@ async def init_teams(understat):
         db.session.add(new_team)
     return db.session.commit()
 
-async def init_players(understat):
+async def init_players(understat, fpl):
     # get all PL players into DB
     players = await understat.get_league_players("epl", 2020)
     for player in players:
@@ -50,6 +53,24 @@ async def init_players(understat):
         new_player = Player(id=player['id'], name=player['player_name'], team=db.session.query(Team).filter_by(name=team_title).first())
         # 2. adds player to db
         db.session.add(new_player) 
+    # add FPL positions from FPL api
+    await get_player_positions(fpl)
+    return db.session.commit()
+
+async def get_player_positions(fpl):
+    fpl_players = await fpl.get_players()
+    for player in fpl_players:
+        player_like_query = Player.query.filter(Player.name.like(f"%{player.web_name}%")).all()
+        if player_like_query:
+            for db_player in player_like_query:
+                if db_player.team.name == get_team_name(player.team):
+                    db_player.position = get_position(player.element_type)
+    players = Player.query.filter(Player.position==None).all()
+    for player in players:
+        player.position = input(f"{player.name} of {player.team}?")
+        
+
+
     return db.session.commit()
 
 async def init_matches(understat, x=3):
@@ -77,6 +98,40 @@ def get_team_id(name):
 def get_performance_date(match_id):
     return db.session.query(Match).filter_by(id=match_id).first().date
 
+def get_position(id):
+    positions = {
+        1 : "GK",
+        2 : "DF",
+        3 : "MF",
+        4 : "FW"
+    }
+    return positions[id]
+
+def get_team_name(id):
+    id_to_team_name = {
+        1 : "Arsenal",
+        2 : "Aston Villa",
+        3 : "Brighton",
+        4 : "Burnley",
+        5 : "Chelsea",
+        6 : "Crystal Palace",
+        7 : "Everton",
+        8 : "Fulham",
+        9 : "Leicester",
+        10 : "Leeds",
+        11 : "Liverpool",
+        12 : "Manchester City",
+        13 : "Manchester United",
+        14 : "Newcastle United",
+        15 : "Sheffield United",
+        16 : "Southampton",
+        17 : "Tottenham",
+        18 : "West Bromwich Albion",
+        19 : "West Ham",
+        20 : "Wolverhampton Wanderers"
+    }
+    return id_to_team_name[id]
+
 async def init_performances(understat):
     # 1. delete stored performances
     if db.session.query(Performance).first():
@@ -86,6 +141,7 @@ async def init_performances(understat):
     #    1. get past player performances
     for player in db.session.query(Player).all():
         player_matches = await understat.get_player_matches(player.id)
+        player_matches = player_matches[:3]
         #    2. set player performances equal to teams matches
         team_matches = get_x_latest_results(player.team_id)
         for match in team_matches:
