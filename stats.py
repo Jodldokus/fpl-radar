@@ -116,7 +116,7 @@ def get_team_name(id):
 async def init_performances(understat):
     # 1. delete stored performances
     if db.session.query(Performance).first():
-        db.session.query(Performance).all().delete()
+        db.session.query(Performance).delete()
 
     # 2. iterate through players:
     #    1. get past player performances

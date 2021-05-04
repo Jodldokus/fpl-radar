@@ -18,8 +18,5 @@ def index():
 @app.route('/player/<player_id>')
 def player(player_id):
     player = Player.query.get(player_id)
-    # list of tuplets, match ID + against
-    """ home_or_away = []
-    for performance in player.performances: """
 
     return render_template('player.html', player=player)
