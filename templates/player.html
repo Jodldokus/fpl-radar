@@ -34,7 +34,7 @@
                 {% if performance.xG is not none %}
                 <td data-label="TP">{{performance.time}}</td>
                 <td data-label="Goals" class="highlight">{{performance.goals}}</td>
-                <td data-label="Shots">-</td>
+                <td data-label="Shots">{{performance.shots}}</td>
                 <td data-label="xG">{{performance.xG | round(2, 'common')}}</td>
                 <td data-label="npxG">{{performance.npxG | round(2, 'common')}}</td>
                 <td data-label="Assists" class="highlight">{{performance.assists}}</td>
