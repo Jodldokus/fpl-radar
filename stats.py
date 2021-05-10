@@ -2,6 +2,7 @@
 import asyncio
 import json
 import aiohttp
+import time
 
 from app import db
 from understat import Understat
@@ -26,6 +27,7 @@ async def main():
         await init_matches(understat)
         # 2. initialise player performances
         await init_performances(understat)
+        
         
 
 async def init_teams(understat):
@@ -77,10 +79,16 @@ async def init_matches(understat, x=3):
     # get recent matches 
     teams = db.session.query(Team).all()
     for team in teams:
+        start_time=time.time()
         fixtures = await understat.get_team_results(team.name, 2020)
         fixtures = fixtures[-x:] 
+        print(f"getting team results took {time.time()-start_time}s")
         for fixture in fixtures:
-            if db.session.query(Match).filter_by(home_team_id=get_team_id(fixture['h']['title']), away_team_id=get_team_id(fixture['a']['title'])).first():
+            start_time = time.time()
+            is_in_db = db.session.query(Match).filter_by(home_team_id=get_team_id(fixture['h']['title']), away_team_id=get_team_id(fixture['a']['title'])).first()
+            print(f"is match in db query takes {time.time()-start_time}s")
+            if is_in_db:
+                # if match is in db already, continue
                 continue
             new_match = Match(
                 home_team = db.session.query(Team).filter_by(name=fixture['h']['title']).first(),
@@ -93,10 +101,10 @@ async def init_matches(understat, x=3):
     return db.session.commit()
 
 def get_team_id(name):
-    return db.session.query(Team).filter_by(name=name).first().id
-
-def get_performance_date(match_id):
-    return db.session.query(Match).filter_by(id=match_id).first().date
+    team = db.session.query(Team).filter_by(name=name).first()
+    if not team:
+        return 420
+    return team.id
 
 def get_position(id):
     positions = {
@@ -118,40 +126,67 @@ async def init_performances(understat):
     if db.session.query(Performance).first():
         db.session.query(Performance).delete()
 
+    recent_matches = {}
+    for team in db.session.query(Team).all():
+        recent_matches[team.id] = get_x_latest_results(team.id)
+
     # 2. iterate through players:
     #    1. get past player performances
     for player in db.session.query(Player).all():
+      
         player_matches = await understat.get_player_matches(player.id)
         player_matches = player_matches[:3]
+        
         #    2. set player performances equal to teams matches
-        team_matches = get_x_latest_results(player.team_id)
-        for match in team_matches:
-            new_performance = Performance(
-                player_id=player.id,
-                match_id=match.id,
-            )
+
+        if player_matches[0]['date'] < recent_matches[player.team_id][0].date:
+            for match in recent_matches[player.team_id]:
+                new_performance = Performance(
+                    player_id=player.id,
+                    match_id=match.id,
+                )
+                db.session.add(new_performance)
+            print(f"{player.name} no feature recently")
+            continue
+        
+        for match in recent_matches[player.team_id]:
+            # if this match equals a match in most recent player performances, 
+            # add player stats to performance, else fill as blank
+            featured = player_featured(match, player_matches)
+            if featured:
+                new_performance = Performance(
+                    player_id=player.id,
+                    match_id=match.id,
+                    xG=featured["xG"],
+                    xA=featured["xA"],
+                    time=featured["time"],
+                    key_passes=featured["key_passes"],
+                    goals=featured["goals"],
+                    assists=featured["assists"],
+                    npg = featured["npg"],
+                    npxG = featured["npxG"]
+                )
+            else:
+                new_performance = Performance(
+                    player_id=player.id,
+                    match_id=match.id
+                )
             db.session.add(new_performance)
-        #    3. iterate over past player performances:
-        for match in player_matches:
-            for performance in player.performances:
-                if match['date'] == get_performance_date(performance.match_id):
-                    performance.xG = match['xG']
-                    performance.xA = match['xA']
-                    performance.time = match['time']
-                    performance.key_passes = match['key_passes']
-                    performance.goals = match['goals']
-                    performance.assists = match['assists']
-                    performance.npg = match['npg']
-                    performance.npxG = match['npxG']
-                    db.session.commit()
-                    break
+    return db.session.commit()
+                
+            
+        
 
-    #       - if past player performance == player performance,
-    #         update player performance data
-   
-
-
-    # 3. add into db, provided they are up to date
+def player_featured(match, player_matches):
+        # returns true if player did feature in specified match
+        for played_match in player_matches:
+            # for each match the player has played, 
+            # check if it is equal to the provided match,
+            # i. e. that home and away teams are equal 
+            
+            if get_team_id(played_match["h_team"]) == match.home_team_id and get_team_id(played_match["a_team"]) == match.away_team_id:
+                return played_match
+        return False
 
 def get_x_latest_results(team_id, x=3):
     team_matches = db.session.query(Match).filter(or_(Match.home_team_id==team_id, Match.away_team_id==team_id)).all()
@@ -159,12 +194,17 @@ def get_x_latest_results(team_id, x=3):
     return team_matches[-x:]
 
 def populate_db():
+    start_time = time.time()
     loop = asyncio.get_event_loop()
     loop.run_until_complete(main())
+    middle_time = time.time()
+    print(f"main loop takes {middle_time-start_time}s")
     for player in db.session.query(Player):
         player.calc_xgi()
     for team in db.session.query(Team):
         team.calc_xGa()
+    end_time = time.time()
+    print(f"player xgi and team xga calculation take {end_time-middle_time}")
     db.session.commit()
 
 if __name__ == '__main__':

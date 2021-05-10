@@ -9,7 +9,9 @@
     <table class ="player_info">
         <thead>
             <th>Against</th>
+            <th>TP</th>
             <th>Goals</th>
+            <th>Shots</th>
             <th>xG</th>
             <th>npxG</th>
             <th>Assists</th>
@@ -30,13 +32,16 @@
                     <p>{{performance.match.date}}</p>
                 </td>
                 {% if performance.xG is not none %}
+                <td data-label="TP">{{performance.time}}</td>
                 <td data-label="Goals" class="highlight">{{performance.goals}}</td>
+                <td data-label="Shots">-</td>
                 <td data-label="xG">{{performance.xG | round(2, 'common')}}</td>
                 <td data-label="npxG">{{performance.npxG | round(2, 'common')}}</td>
                 <td data-label="Assists" class="highlight">{{performance.assists}}</td>
                 <td data-label="xA">{{performance.xA | round(2, 'common')}}</td>
                 <td data-label="KP">{{performance.key_passes}}</td>
                 {% else %}
+                <td data-label="TP">-</td>
                 <td data-label="Goals">-</td>
                 <td data-label="xG">-</td>
                 <td data-label="npxG">-</td>
