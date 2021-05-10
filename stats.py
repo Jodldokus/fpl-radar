@@ -160,6 +160,7 @@ async def init_performances(understat):
                     xG=featured["xG"],
                     xA=featured["xA"],
                     time=featured["time"],
+                    shots=featured["shots"],
                     key_passes=featured["key_passes"],
                     goals=featured["goals"],
                     assists=featured["assists"],
