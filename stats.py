@@ -32,7 +32,7 @@ async def main():
 
 async def init_teams(understat):
     # get PL teams into DB
-    teams = await understat.get_teams("epl", 2020)
+    teams = await understat.get_teams("epl", 2021)
     for team in teams:
         new_team = Team(name=team["title"])
         db.session.add(new_team)
@@ -40,7 +40,7 @@ async def init_teams(understat):
 
 async def init_players(understat, fpl):
     # get all PL players into DB
-    players = await understat.get_league_players("epl", 2020)
+    players = await understat.get_league_players("epl", 2021)
     for player in players:
         if ',' not in player['team_title']:
             team_title = player['team_title']
@@ -80,7 +80,7 @@ async def init_matches(understat, x=3):
     teams = db.session.query(Team).all()
     for team in teams:
         start_time=time.time()
-        fixtures = await understat.get_team_results(team.name, 2020)
+        fixtures = await understat.get_team_results(team.name, 2021)
         fixtures = fixtures[-x:] 
         print(f"getting team results took {time.time()-start_time}s")
         for fixture in fixtures:
@@ -117,7 +117,7 @@ def get_position(id):
 
 def get_team_name(id):
     id_to_team_name = {
-        1 : "Arsenal", 2 : "Aston Villa",3 : "Brighton",4 : "Burnley",5 : "Chelsea",6 : "Crystal Palace",7 : "Everton",8 : "Fulham",9 : "Leicester",10 : "Leeds",11 : "Liverpool",12 : "Manchester City",13 : "Manchester United",14 : "Newcastle United",15 : "Sheffield United",16 : "Southampton",17 : "Tottenham",18 : "West Bromwich Albion",19 : "West Ham",20 : "Wolverhampton Wanderers"
+        1 : "Arsenal", 2 : "Aston Villa",3 : "Brentford",4 : "Brighton",5 : "Burnley",6 : "Chelsea",7 : "Crystal Palace",8 : "Everton",9 : "Leicester",10 : "Leeds",11 : "Liverpool",12 : "Manchester City",13 : "Manchester United",14 : "Newcastle United",15 : "Norwich",16 : "Southampton",17 : "Tottenham",18 : "Watford",19 : "West Ham",20 : "Wolverhampton Wanderers"
     }
     return id_to_team_name[id]
 
