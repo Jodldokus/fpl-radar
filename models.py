@@ -3,7 +3,7 @@ from app import db
 
 class Player(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(40), unique=True)
+    name = db.Column(db.String(40))
     team_id = db.Column(db.ForeignKey('team.id'))
     position = db.Column(db.String(2), index=True)
     xGi = db.Column(db.Float, index=True)
