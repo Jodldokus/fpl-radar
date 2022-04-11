@@ -1,1 +1,4 @@
-suck it nerds
+fpl-radar
+
+is a flask-based web-app which pulls up-to-date xGi (expected goal involvement)
+data from understat, aiming to uncover undervalued players from a fpl standpoint.
