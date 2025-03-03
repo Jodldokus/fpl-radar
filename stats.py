@@ -127,7 +127,7 @@ def get_team_id(name):
 
 
 def get_position(id):
-    positions = {1: "GK", 2: "DF", 3: "MF", 4: "FW"}
+    positions = {1: "GK", 2: "DF", 3: "MF", 4: "FW", 5: "MA"}
     return positions[id]
 
 
@@ -135,22 +135,22 @@ def get_team_name(id):
     id_to_team_name = {
         1: "Arsenal",
         2: "Aston Villa",
-        3: "Brentford",
-        4: "Brighton",
-        5: "Burnley",
+        3: "Bournemouth",
+        4: "Brentford",
+        5: "Brighton",
         6: "Chelsea",
         7: "Crystal Palace",
         8: "Everton",
-        9: "Leicester",
-        10: "Leeds",
-        11: "Liverpool",
-        12: "Manchester City",
-        13: "Manchester United",
-        14: "Newcastle United",
-        15: "Norwich",
-        16: "Southampton",
-        17: "Tottenham",
-        18: "Watford",
+        9: "Fulham",
+        10: "Ipswich",
+        11: "Leicester",
+        12: "Liverpool",
+        13: "Manchester City",
+        14: "Manchester United",
+        15: "Newcastle United",
+        16: "Nottingham Forest",
+        17: "Southampton",
+        18: "Tottenham",
         19: "West Ham",
         20: "Wolverhampton Wanderers",
     }
@@ -224,7 +224,7 @@ def player_featured(match, player_matches):
     return False
 
 
-def get_x_latest_results(team_id, x=3):
+def get_x_latest_results(team_id, x=4):
     team_matches = (
         db.session.query(Match)
         .filter(or_(Match.home_team_id == team_id, Match.away_team_id == team_id))
