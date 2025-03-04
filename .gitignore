@@ -2,3 +2,8 @@
 ./.venv
 ./lib
 /lib
+bin/
+lib/
+lib64/
+include/
+pyvenv.cfg
