@@ -11,6 +11,8 @@ from sqlalchemy import or_
 from datetime import date
 from fpl import FPL
 
+AMOUNT_OF_MATCHES = 4
+
 
 async def main():
     async with aiohttp.ClientSession() as session:
@@ -82,7 +84,7 @@ async def get_player_positions(fpl):
     return db.session.commit()
 
 
-async def init_matches(understat, x=3):
+async def init_matches(understat, x=AMOUNT_OF_MATCHES):
     # get recent matches
     teams = db.session.query(Team).all()
     for team in teams:
@@ -171,7 +173,7 @@ async def init_performances(understat):
     for player in db.session.query(Player).all():
 
         player_matches = await understat.get_player_matches(player.id)
-        player_matches = player_matches[:3]
+        player_matches = player_matches[:AMOUNT_OF_MATCHES]
 
         #    2. set player performances equal to teams matches
 
@@ -224,7 +226,7 @@ def player_featured(match, player_matches):
     return False
 
 
-def get_x_latest_results(team_id, x=4):
+def get_x_latest_results(team_id, x=AMOUNT_OF_MATCHES):
     team_matches = (
         db.session.query(Match)
         .filter(or_(Match.home_team_id == team_id, Match.away_team_id == team_id))
