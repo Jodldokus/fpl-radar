@@ -22,7 +22,6 @@
             {% for performance in player.performances %}
         
             <tr>
-            
                 <td data-label="Against">
                     {% if player.team == performance.match.home_team %}
                     {{performance.match.away_team}} (H)
