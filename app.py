@@ -21,3 +21,7 @@ app.config["SECRET_KEY"] = "MEGAsecret"
 db = SQLAlchemy(app)
 
 import routes, models
+
+with app.app_context():
+    db.create_all()
+    db.session.commit()

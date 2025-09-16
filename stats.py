@@ -12,7 +12,7 @@ from datetime import date
 from fpl import FPL
 
 AMOUNT_OF_MATCHES = 4
-
+SEASON = 2025
 
 async def main():
     async with aiohttp.ClientSession() as session:
@@ -34,7 +34,7 @@ async def main():
 
 async def init_teams(understat):
     # get PL teams into DB
-    teams = await understat.get_teams("epl", 2024)
+    teams = await understat.get_teams("epl", SEASON)
     for team in teams:
         new_team = Team(name=team["title"])
         db.session.add(new_team)
@@ -43,7 +43,7 @@ async def init_teams(understat):
 
 async def init_players(understat, fpl):
     # get all PL players into DB
-    players = await understat.get_league_players("epl", 2024)
+    players = await understat.get_league_players("epl", SEASON)
     for player in players:
         if "," not in player["team_title"]:
             team_title = player["team_title"]
@@ -89,7 +89,7 @@ async def init_matches(understat, x=AMOUNT_OF_MATCHES):
     teams = db.session.query(Team).all()
     for team in teams:
         start_time = time.time()
-        fixtures = await understat.get_team_results(team.name, 2024)
+        fixtures = await understat.get_team_results(team.name, SEASON)
         fixtures = fixtures[-x:]
         print(f"getting team results took {time.time()-start_time}s")
         for fixture in fixtures:
@@ -137,21 +137,21 @@ def get_team_name(id):
     id_to_team_name = {
         1: "Arsenal",
         2: "Aston Villa",
-        3: "Bournemouth",
-        4: "Brentford",
-        5: "Brighton",
-        6: "Chelsea",
-        7: "Crystal Palace",
-        8: "Everton",
-        9: "Fulham",
-        10: "Ipswich",
-        11: "Leicester",
+        3: "Burnley",
+        4: "Bournemouth",
+        5: "Brentford",
+        6: "Brighton",
+        7: "Chelsea",
+        8: "Crystal Palace",
+        9: "Everton",
+        10: "Fulham",
+        11: "Leeds",
         12: "Liverpool",
         13: "Manchester City",
         14: "Manchester United",
         15: "Newcastle United",
         16: "Nottingham Forest",
-        17: "Southampton",
+        17: "Sunderland",
         18: "Tottenham",
         19: "West Ham",
         20: "Wolverhampton Wanderers",
