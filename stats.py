@@ -10,9 +10,11 @@ from models import Player, Match, Team, Performance
 from sqlalchemy import or_
 from datetime import date
 from fpl import FPL
+import random
 
 AMOUNT_OF_MATCHES = 4
 SEASON = 2025
+
 
 async def main():
     async with aiohttp.ClientSession() as session:
@@ -88,6 +90,9 @@ async def init_matches(understat, x=AMOUNT_OF_MATCHES):
     # get recent matches
     teams = db.session.query(Team).all()
     for team in teams:
+        # Add a random delay between 0.2 and 0.5 seconds to avoid rate limiting
+        wait_time = random.uniform(0.2, 0.5)
+        time.sleep(wait_time)
         start_time = time.time()
         fixtures = await understat.get_team_results(team.name, SEASON)
         fixtures = fixtures[-x:]
@@ -171,6 +176,9 @@ async def init_performances(understat):
     # 2. iterate through players:
     #    1. get past player performances
     for player in db.session.query(Player).all():
+
+        wait_time = random.uniform(0.2, 0.5)
+        time.sleep(wait_time)
 
         player_matches = await understat.get_player_matches(player.id)
         player_matches = player_matches[:AMOUNT_OF_MATCHES]
