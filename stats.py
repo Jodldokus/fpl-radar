@@ -164,6 +164,19 @@ def get_team_name(id):
     return id_to_team_name[id]
 
 
+async def retry_async(func, *args, retries=3, delay=1, **kwargs):
+    for attempt in range(retries):
+        try:
+            return await func(*args, **kwargs)
+        except Exception as e:
+            if attempt < retries - 1:
+                print(f"Error: {e}. Retrying in {delay} seconds...")
+                await asyncio.sleep(delay)
+            else:
+                print(f"Error: {e}. No more retries left.")
+                raise
+
+
 async def init_performances(understat):
     # 1. delete stored performances
     if db.session.query(Performance).first():
@@ -180,7 +193,8 @@ async def init_performances(understat):
         wait_time = random.uniform(0.2, 0.5)
         time.sleep(wait_time)
 
-        player_matches = await understat.get_player_matches(player.id)
+        player_matches = await retry_async(understat.get_player_matches, player.id)
+
         player_matches = player_matches[:AMOUNT_OF_MATCHES]
 
         #    2. set player performances equal to teams matches
